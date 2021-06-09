@@ -1,0 +1,124 @@
+metadata:
+  title: Barter Agreement Interview
+  short title: Barter Agreement
+---
+mandatory: True
+code: |
+  multi_user = True
+---
+mandatory: True
+code: |
+  multi_user = True
+  signature = '(Your signature will go here)'
+---
+mandatory: True
+code: |
+  intro_seen
+  email_address
+  partyA
+  partyB
+  exchange_deadline 
+  agreementdate = today()
+  notified_of_url
+  agrees_to_sign
+  signature_reset
+  signature
+  document_emailed
+  final_screen
+---
+code: |
+  notified_of_url = True
+  prevent_going_back()
+  force_ask('screen_with_link')
+---
+question: Name of your business and offer
+fields:
+  -  Business: partyA
+  -  offer: partyA_offer
+  -  monetary value: partyA_value
+---
+question: Name the other business and their offer
+fields:
+  - Business: partyB
+  - offer: partyB_offer
+  - monetary value: partyB_value
+---
+question: Date of Exchange
+subquestion:
+  What is the deadline for this exchange to occur?
+fields:  
+  - date: exchange_deadline 
+    datatype: date
+---
+question: |
+  What is your e-mail address?
+subquestion: |
+  The signed document will be e-mailed to this address.
+fields:
+  - E-mail: email_address
+---
+event: screen_with_link
+question: |
+  Share this link with the signer.
+subquestion: |
+  Suggested content for e-mailing to the signer:
+    
+  > I need you to sign a document.  You can
+  > sign it using a touchscreen or with a
+  > mouse.  To see the document and start
+  > the signing process, [click here].
+  [click here]: ${ interview_url() }
+---
+signature: signature
+question: Sign your name
+---
+question: |
+  Do you agree to sign this document?
+subquestion: |
+  Click the document image below to read the document
+  before signing it.
+  
+  ${ draft_document.pdf }
+field: agrees_to_sign
+continue button label: I agree to sign
+---
+attachment:
+  name: Document
+  filename: signed_document
+  variable name: draft_document
+  docx template file: BARTER_AGREEMENT.docx
+---
+question: |
+  Before we begin
+subquestion: |
+  Please ensure you correctly document the names, adresses and offers of all both parties involved in this transaction
+  
+  This interview will provide a link via email that the other party can use to preview and put their signature on the document before sending the cosigned document back to you
+field: intro_seen
+---
+code: |
+  del signature
+  signature_reset = True
+---
+attachment:
+  name: Document
+  filename: signed_document
+  variable name: signed_document
+  valid formats:
+    - pdf
+  docx template file: BARTER_AGREEMENT.docx  
+---
+event: final_screen
+prevent going back: True
+question: |
+  Here is your signed document.
+attachment code: signed_document
+---
+template: email_template
+subject: Signed document
+content: |
+  The attached document has been signed.
+---
+code: |
+  send_email(to=email_address, template=email_template, attachments=signed_document.pdf)
+  document_emailed = True
