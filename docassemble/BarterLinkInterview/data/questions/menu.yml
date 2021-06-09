@@ -111,7 +111,7 @@ attachment:
 event: final_screen
 prevent going back: True
 question: |
-  Here is your signed document.
+  Here is your signed document copy.
 attachment code: signed_document
 ---
 template: email_template
