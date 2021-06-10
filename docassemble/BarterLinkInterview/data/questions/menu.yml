@@ -23,10 +23,11 @@ code: |
   partyA_signdate = today()
   agreementdate
   notified_of_url
+  partyB_signdate = today()
   agrees_to_sign
   signature_reset
   signature
-  partyB_signdate = today()
+  send_email
   document_emailed
   final_screen
 ---
@@ -138,7 +139,13 @@ event: final_screen
 prevent going back: True
 question: |
   Here is your signed document copy.
-attachment code: signed_document
+subquestion: |
+  You can download your document
+  [here](${ signed_document.pdf.url_for() })
+  
+  ${signed_document.pdf}
+buttons:
+  - Exit: exit
 ---
 template: email_template
 subject: Signed document
@@ -146,5 +153,5 @@ content: |
   The attached document has been signed.
 ---
 code: |
-  send_email(to=email_address, template=email_template, attachments=signed_document.pdf)
+  send_email(to=email_address,sender='help@incrementic.com', template=email_template, attachments=signed_document.pdf)
   document_emailed = True
