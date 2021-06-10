@@ -17,12 +17,16 @@ code: |
   email_address
   partyA
   partyB
+  additional_conditions
   exchange_deadline 
-  agreementdate = today()
+  partyA_signature
+  partyA_signdate = today()
+  agreementdate
   notified_of_url
   agrees_to_sign
   signature_reset
   signature
+  partyB_signdate = today()
   document_emailed
   final_screen
 ---
@@ -31,17 +35,31 @@ code: |
   prevent_going_back()
   force_ask('screen_with_link')
 ---
-question: Name of your business and offer
+question: Party A and their offer
 fields:
   -  Business: partyA
+  - representative name: partyA_official
   -  offer: partyA_offer
   -  monetary value: partyA_value
 ---
-question: Name the other business and their offer
+question: Party B and their offer
 fields:
   - Business: partyB
+  - representative name: partyB_official
   - offer: partyB_offer
   - monetary value: partyB_value
+---
+question: Additional conditions
+subquestions: Are there any extra conditions to be noted?
+fields:
+  - Condition(s): additional_conditions
+---
+question: Date of Agreement
+subquestion:
+  When was the agreement made?
+fields:  
+  - date: agreementdate
+    datatype: date
 ---
 question: Date of Exchange
 subquestion:
@@ -49,6 +67,12 @@ subquestion:
 fields:  
   - date: exchange_deadline 
     datatype: date
+---
+question: Signature of party A
+subquestion: Please sign here and input your name and role in the business
+signature: partyA_signature
+under: |
+  ${ partyA_official }
 ---
 question: |
   What is your e-mail address?
@@ -71,6 +95,8 @@ subquestion: |
 ---
 signature: signature
 question: Sign your name
+under: |
+  ${ partyB_official }
 ---
 question: |
   Do you agree to sign this document?
